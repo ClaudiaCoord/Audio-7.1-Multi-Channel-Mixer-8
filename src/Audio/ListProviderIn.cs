@@ -10,7 +10,7 @@ using MCM8.UC;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace MCM8
+namespace MCM8.Audio
 {
     internal class ListProviderIn : IDisposable
     {
@@ -19,21 +19,26 @@ namespace MCM8
         private MMDeviceCollection? MMDevices = null;
 
         public event EventHandler OnError = delegate { };
+        public event EventHandler OnPlayerError = delegate { };
 
-        public static int DefaultRate {
+        public static int DefaultRate
+        {
             get => Properties.Settings.Default.DefaultRate;
             set => Properties.Settings.Default.DefaultRate = value;
         }
-        public static int DefaultBits {
+        public static int DefaultBits
+        {
             get => Properties.Settings.Default.DefaultBits;
             set => Properties.Settings.Default.DefaultBits = value;
         }
-        public static int DefaultChannels {
+        public static int DefaultChannels
+        {
             get => Properties.Settings.Default.DefaultChannels;
             set => Properties.Settings.Default.DefaultChannels = value;
         }
 
-        public ListProviderIn() {
+        public ListProviderIn()
+        {
             audioIn.OnError += (s, a) => OnError.Invoke(s, a);
         }
         ~ListProviderIn() => Dispose();
@@ -66,8 +71,25 @@ namespace MCM8
             try {
                 item.SetProvider(
                     new SilenceProvider(new WaveFormat(rate, bits, WaveIn.GetCapabilities(channels).Channels)));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 OnError.Invoke(this, new StringEventArgs(ex.Message));
+            }
+        }
+        public void Add(SourceNumber cn, ADev? dev, ApiPlayer? p)
+        {
+            if ((dev == null) || (p == null)) return;
+            var item = audioIn.GetAudioItem(cn);
+            if (item == null) return;
+            try {
+                dev.SetDevice(p);
+                if (dev.IsApiDevice && (dev.Provider != null))
+                    item.SetProvider(dev.Provider);
+            }
+            catch (Exception ex) {
+                StringEventArgs args = new StringEventArgs(ex.Message);
+                OnError.Invoke(this, args);
+                OnPlayerError.Invoke(this, args);
             }
         }
         public void Add(SourceNumber cn, ADev? dev)
@@ -94,12 +116,15 @@ namespace MCM8
 
         private void GetApiDevice(ADev dev)
         {
-            if ((MMEnumerator == null) || (MMDevices == null)) Begin();
+            if (MMEnumerator == null || MMDevices == null) Begin();
             try {
-                dev.ApiDevice.Device = (from i in MMDevices
-                                        where i.FriendlyName.StartsWith(dev.Name)
-                                        select i).FirstOrDefault();
-            } catch (Exception ex) {
+                var d = (from i in MMDevices
+                         where i.FriendlyName.StartsWith(dev.Name)
+                         select i).FirstOrDefault();
+                if (d != null)
+                    dev.SetDevice(new ApiDevice(d));
+            }
+            catch (Exception ex) {
                 OnError.Invoke(this, new StringEventArgs(ex.Message));
             }
         }

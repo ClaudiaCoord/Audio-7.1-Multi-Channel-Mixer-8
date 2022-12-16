@@ -12,27 +12,28 @@ using MCM8.UC;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace MCM8
+namespace MCM8.Audio
 {
-    internal class ListAudioIn
+    public class ListAudioIn : IAList
     {
         public ObservableCollection<ADev> AudioInDevices { get; } = new ObservableCollection<ADev>();
         public Action<int> OnDevicesListComplette = (n) => { };
         public event EventHandler OnError = delegate { };
 
-        public void Init()
+        public void Load()
         {
             try {
                 AudioInDevices.Clear();
                 AudioInDevices.Add(new ADev(-1, Properties.Resources.ComboBoxNotSelected));
+                for (int i = 0; i < 4; i++)
+                    AudioInDevices.Add(new ADev(i));
                 MMDeviceEnumerator? enumerator = null;
 
                 try {
                     enumerator = new MMDeviceEnumerator();
                     var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
 
-                    for (int n = 0; n < WaveIn.DeviceCount; n++)
-                    {
+                    for (int n = 0; n < WaveIn.DeviceCount; n++) {
                         var a = WaveIn.GetCapabilities(n);
                         var d = (from i in devices
                                  where i.FriendlyName.StartsWith(a.ProductName)
@@ -44,7 +45,8 @@ namespace MCM8
                         OnError.Invoke(this, new StringEventArgs($"{n}: {a.ProductName} {a.Channels}"));
                     }
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     OnError.Invoke(this, new StringEventArgs(ex.Message));
                     return;
                 }
@@ -62,10 +64,10 @@ namespace MCM8
                         AllowTrailingCommas = true,
                     };
                     ADevList? list = JsonSerializer.Deserialize<ADevList>(json, opt);
-                    if ((list != null) && (list.Devices.Count > 0))
+                    if (list != null && list.Devices.Count > 0)
                     {
-                        foreach(ADev? a in list.Devices)
-                        {
+                        foreach (ADev? a in list.Devices) {
+                            if (a == null) continue;
                             ADev? dev = (from i in AudioInDevices
                                          where i.Name.Equals(a.Name)
                                          select i).FirstOrDefault();
@@ -75,7 +77,8 @@ namespace MCM8
                 }
                 OnDevicesListComplette.Invoke(WaveIn.DeviceCount);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 OnError.Invoke(this, new StringEventArgs(ex.Message));
                 OnDevicesListComplette.Invoke(0);
             }
@@ -84,53 +87,58 @@ namespace MCM8
         public List<ADev> GetDevicesList() => AudioInDevices.ToList();
         public ADev? GetDevice(SourceNumber cn) =>
             (from i in AudioInDevices
-             where i.Source == cn
+             where i.SourceId == cn
              select i).FirstOrDefault();
 
         public void Save()
         {
-            try {
+            try
+            {
                 ADevList list = new(AudioInDevices.ToList());
-                var opt = new JsonSerializerOptions {
+                var opt = new JsonSerializerOptions
+                {
                     WriteIndented = true,
                     IgnoreReadOnlyFields = true,
                     IgnoreReadOnlyProperties = true,
                     AllowTrailingCommas = true
                 };
-                string json = JsonSerializer.Serialize<ADevList>(list, opt);
+                string json = JsonSerializer.Serialize(list, opt);
                 if (!string.IsNullOrWhiteSpace(json))
                     Properties.Settings.Default.JsonInputDevices = json;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 OnError.Invoke(this, new StringEventArgs(ex.Message));
             }
         }
 
         public void MergeChanged(ADev a)
         {
-            if (a.Source == SourceNumber.Source_None)
+            if (a.SourceId == SourceNumber.Source_None)
                 return;
 
             var aa = (from i in AudioInDevices
-                      where i.Source == a.Source
+                      where i.SourceId == a.SourceId
                       select i).ToArray();
 
-            if ((aa != null) && (aa.Length > 0)) {
-                foreach (ADev dev in aa) {
+            if (aa != null && aa.Length > 0)
+            {
+                foreach (ADev dev in aa)
+                {
                     if (dev.Id == a.Id)
                         dev.Copy(a);
                     else
-                        dev.Source = SourceNumber.Source_None; 
+                        dev.SourceId = SourceNumber.Source_None;
                 }
             }
         }
 
         public void SetDisable(SourceNumber cn)
         {
-            ADev? a =(from i in AudioInDevices
-                      where i.Source == cn
-                      select i).FirstOrDefault();
-            if ((a != null) && a.Enable)
+            ADev? a = (from i in AudioInDevices
+                       where i.SourceId == cn
+                       select i).FirstOrDefault();
+            if (a != null && a.Enable)
                 a.Enable = false;
         }
     }

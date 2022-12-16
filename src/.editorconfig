@@ -125,3 +125,6 @@ dotnet_style_namespace_match_folder = true:suggestion
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 indent_size = 4
+
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = none

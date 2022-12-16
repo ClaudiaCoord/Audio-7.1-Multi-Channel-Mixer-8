@@ -10,19 +10,20 @@ using MCM8.UC;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace MCM8
+namespace MCM8.Audio
 {
     internal class ADevIn : IDisposable
     {
         public AudioItem[] Items = new AudioItem[4];
-
         public event EventHandler OnError = delegate { };
 
 
-        public ADevIn() {
-            for (int i = 0; i < Items.Length; i++) {
+        public ADevIn()
+        {
+            for (int i = 0; i < Items.Length; i++)
+            {
                 Items[i] = new AudioItem();
-                Items[i].OnError += (s,a) => OnError.Invoke(s,a);
+                Items[i].OnError += (s, a) => OnError.Invoke(s, a);
             }
         }
 
@@ -77,10 +78,12 @@ namespace MCM8
         {
             try {
                 Dispose();
-                if ((dev == null) || (dev.ApiDevice.Device == null)) return;
-                Wavein = (dev.ApiDevice.Device.DataFlow == DataFlow.Capture) ?
-                    new WasapiCapture(dev.ApiDevice.Device) :
-                    new WasapiLoopbackCapture(dev.ApiDevice.Device);
+                if ((dev == null) || !dev.IsApiDeviceReady) return;
+#               pragma warning disable CS8602
+                Wavein = dev.Device.DataFlow == DataFlow.Capture ?
+                    new WasapiCapture(dev.Device) :
+                    new WasapiLoopbackCapture(dev.Device);
+#               pragma warning restore CS8602
                 Provider = new WaveInProvider(Wavein);
             }
             catch (Exception ex) {
@@ -124,8 +127,8 @@ namespace MCM8
             IWaveIn? w = Wavein;
             Wavein = null;
             if (w != null) {
-                w.StopRecording();
-                w.Dispose();
+                try { w.StopRecording(); } catch { }
+                try { w.Dispose(); } catch { }
             }
             Provider = null;
         }

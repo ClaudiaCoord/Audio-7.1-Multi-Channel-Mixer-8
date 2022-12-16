@@ -1,0 +1,18 @@
+﻿/*
+	Git: https://github.com/ClaudiaCoord/Audio-7.1-Multi-Channel-Mixer-8
+	ASIO 8 Multi Channel Mixer / 7.1 Sound card compatible (CM6206).
+	(c) CC 2022, MIT
+
+	See README.md for more details.
+	NOT FOR CHINESE USE FOR SALES! FREE SOFTWARE!
+*/
+
+namespace MCM8.Audio
+{
+    internal interface IAList
+    {
+		public event EventHandler OnError;
+        public void Load();
+		public void Save();
+    }
+}

@@ -7,6 +7,8 @@
 	NOT FOR CHINESE USE FOR SALES! FREE SOFTWARE!
 */
 
+using MCM8.Audio;
+
 namespace MCM8.UC
 {
     public class ADevEventArgs : EventArgs
@@ -35,5 +37,18 @@ namespace MCM8.UC
     {
         public string Text { get; }
         public StringEventArgs(string s) => Text = s;
+    }
+    public class ListEventArgs : EventArgs
+    {
+        public List<string> List { get; }
+        public string Folder { get; }
+        public PlayerSourceNumber PlayerId { get; }
+        public ListEventArgs(PlayerSourceNumber id, string f, List<string> l) { PlayerId = id; Folder = f; List = l; }
+    }
+    public class MediaCtrlEventArgs : EventArgs
+    {
+        public PlayerSourceControl PlayerCtrl { get; }
+        public PlayerSourceNumber PlayerId { get; }
+        public MediaCtrlEventArgs(PlayerSourceNumber id, PlayerSourceControl ctrl) { PlayerId = id; PlayerCtrl = ctrl; }
     }
 }

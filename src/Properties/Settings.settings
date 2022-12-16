@@ -20,7 +20,7 @@
     <Setting Name="DefaultChannels" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
-    <Setting Name="JsonChannelsMatrix" Type="System.String" Scope="User">
+    <Setting Name="JsonPlayLists" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

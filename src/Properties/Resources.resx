@@ -121,8 +121,14 @@
   <data name="asio" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\asio.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Close_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Close-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ComboBoxNotSelected" xml:space="preserve">
     <value>-- not selected --</value>
+  </data>
+  <data name="ComboBoxPlayerSelected" xml:space="preserve">
+    <value>-- local player</value>
   </data>
   <data name="LabelAsioOff" xml:space="preserve">
     <value>-- off --</value>
@@ -141,6 +147,42 @@
   </data>
   <data name="main_tray_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\main-tray-on.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_End_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-End-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Fast_Forward_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Fast-Forward-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_High_Volume_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-High-Volume-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Medium_Volume_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Medium-Volume-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Mute_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Mute-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Pause_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Pause-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Play_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Play-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Repeat_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Repeat-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Rewind_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Rewind-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Shuffle_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Shuffle-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Skip_To_Start_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Skip-To-Start-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Media_Controls_Stop_icon_32x32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icons\PlayerControl\Media-Controls-Stop-icon-32x32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mmres_3012" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icons\mmres-3018.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

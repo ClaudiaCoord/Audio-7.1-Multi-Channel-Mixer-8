@@ -7,6 +7,8 @@
 	NOT FOR CHINESE USE FOR SALES! FREE SOFTWARE!
 */
 
+using MCM8.Audio;
+
 namespace MCM8.UC
 {
     public partial class UCASIO : UserControl
@@ -37,7 +39,7 @@ namespace MCM8.UC
         {
             get {
                 if (DeviceAsioOutBox.SelectedItem is ADev dev) {
-                    dev.Source = SourceNumber.Source_None;
+                    dev.SourceId = SourceNumber.Source_None;
                     dev.Channels[0] = -1;
                     dev.Channels[1] = -1;
                     return dev;
@@ -46,7 +48,7 @@ namespace MCM8.UC
             }
             set {
                 if (DeviceAsioOutBox.SelectedItem is ADev dev) {
-                    dev.Source = SourceNumber.Source_None;
+                    dev.SourceId = SourceNumber.Source_None;
                     dev.Channels[0] = -1;
                     dev.Channels[1] = -1;
                     dev.Enable = true;
@@ -81,12 +83,14 @@ namespace MCM8.UC
             }
         }
 
+        private bool controlEnabled = true;
         public bool ControlEnabled
         {
-            get => base.Enabled;
+            get => controlEnabled;
             set {
-                if (value == base.Enabled) return;
-                gbAsio.Invoker(() => gbAsio.Enabled = value);
+                if (value == controlEnabled) return;
+                controlEnabled = value;
+                gbAsio.Invoker(() => gbAsio.Enabled = controlEnabled);
             }
         }
 

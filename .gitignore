@@ -38,6 +38,7 @@ msbuild.wrn
 README.*.*
 *.vssbe
 
+/src/icons/-Archive-/*
 /docs/*.txt
 /docs/*.ico
 /docs/*.msi

@@ -7,15 +7,16 @@
 	NOT FOR CHINESE USE FOR SALES! FREE SOFTWARE!
 */
 
+using MCM8.Audio;
 using NAudio.Gui;
 
 namespace MCM8.UC
 {
     public partial class UCSource : UserControl
     {
-        private RadioButton[] ChannelsMatrix1;
-        private RadioButton[] ChannelsMatrix2;
-        private SourceNumber SrcNum = SourceNumber.Source_None;
+        private readonly RadioButton[] ChannelsMatrix1;
+        private readonly RadioButton[] ChannelsMatrix2;
+        private SourceNumber sourceId = SourceNumber.Source_None;
 
         public UCSource()
         {
@@ -35,12 +36,12 @@ namespace MCM8.UC
         public event EventHandler OnVolumeChanged = delegate { };
         public event EventHandler OnError = delegate { };
 
-        public SourceNumber SourceNumber {
-            get => SrcNum;
+        public SourceNumber SourceId {
+            get => sourceId;
             set {
-                if ((SrcNum == value) || !(SrcNum == SourceNumber.Source_None)) return;
-                SrcNum = value;
-                int x = SrcNum.ToInt() + 1;
+                if ((sourceId == value) || !(sourceId == SourceNumber.Source_None)) return;
+                sourceId = value;
+                int x = sourceId.ToInt() + 1;
                 lbChannel1.Text = $"{x}/1";
                 lbChannel2.Text = $"{x}/2";
                 gbSourceCtrl.Text = $"{gbSourceCtrl.Text} {x}";
@@ -51,15 +52,21 @@ namespace MCM8.UC
             get => cmDevicesBox.DataSource as List<ADev>;
             set {
                 if (value == null) return;
-                cmDevicesBox.Invoker(() => cmDevicesBox.DataSource = value);
-                ADev? dev = (from i in value
-                             where i.Source == SourceNumber
+                List<ADev> devs = new List<ADev>();
+                foreach (var v in value) {
+                    if ((v.Id == -10) && (v.PlayerId.ToInt() != SourceId.ToInt()))
+                        continue;
+                    devs.Add(v);
+                }
+                cmDevicesBox.Invoker(() => cmDevicesBox.DataSource = devs);
+                ADev? dev = (from i in devs
+                             where i.SourceId == SourceId
                              select i).FirstOrDefault();
                 if (dev != null) {
-                    if (dev.Id >= 0)
+                    if ((dev.Id >= 0) || (dev.Id == -10))
                         cmDevicesBox.Invoker(() => cmDevicesBox.SelectedItem = dev);
                     else
-                        dev.Source = SourceNumber.Source_None;
+                        dev.SourceId = SourceNumber.Source_None;
                 }
             }
         }
@@ -67,16 +74,19 @@ namespace MCM8.UC
         {
             get {
                 if (cmDevicesBox.SelectedItem is ADev dev) {
-                    dev.Source = SourceNumber;
+                    dev.SourceId = SourceId;
+                    dev.PlayerId = (dev.Id == -10) ? SourceId.PlayerFromSourceNumber() : PlayerSourceNumber.Player_None;
                     dev.Channels = Channels;
-                    dev.ApiDevice.OnVolumeChanged -= DeviceVolumeChanged;
+                    dev.OnVolumeChanged -= DeviceVolumeChanged;
+                    SelectedName(dev);
                     return dev;
                 }
                 return null;
             }
             set {
                 if ((cmDevicesBox.SelectedItem is ADev dev) && (value != dev)) {
-                    dev.Source = SourceNumber.Source_None;
+                    dev.SourceId = SourceNumber.Source_None;
+                    dev.PlayerId = PlayerSourceNumber.Player_None;
                     dev.Channels[0] = -1;
                     dev.Channels[1] = -1;
                     dev.Enable = true;
@@ -89,7 +99,7 @@ namespace MCM8.UC
         public int[] Channels
         {
             get {
-                int xx = SrcNum.ToInt() * 2;
+                int xx = sourceId.ToInt() * 2;
                 int[] x = new int[] { xx, xx + 1 };
                 try {
                     string? s;
@@ -108,7 +118,7 @@ namespace MCM8.UC
                 if ((value[0] >= 0) && (value[0] < ChannelsMatrix1.Length)) {
                     ChannelsMatrix1[value[0]].Invoker(() => ChannelsMatrix1[value[0]].Checked = true);
                 } else {
-                    int x = SrcNum.ToInt();
+                    int x = sourceId.ToInt();
                     if (x >= 0) {
                         x *= 2;
                         if (x < ChannelsMatrix1.Length)
@@ -118,7 +128,7 @@ namespace MCM8.UC
                 if ((value[1] >= 0) && (value[1] < ChannelsMatrix2.Length)) {
                     ChannelsMatrix2[value[1]].Invoker(() => ChannelsMatrix2[value[1]].Checked = true);
                 } else {
-                    int x = SrcNum.ToInt();
+                    int x = sourceId.ToInt();
                     if (x >= 0) {
                         x = (x * 2) + 1;
                         if (x < ChannelsMatrix2.Length)
@@ -197,11 +207,13 @@ namespace MCM8.UC
             if (sender is ComboBox cmb) {
                 if (cmb.SelectedItem is ADev dev) {
                     try {
+                        if (dev.Id == -10) dev.Enable = true;
                         chkEnableBox.Invoker(() => {
                             chkEnableBox.Checked = dev.Enable;
-                            lbName.Text = dev.Name;
+                            lbName.Text = (dev.Id == -10) ? $"{dev.Name} - {dev.PlayCount} files" : dev.Name;
                         });
-                        dev.Source = SourceNumber;
+                        SelectedName(dev);
+                        dev.SourceId = SourceId;
                         Channels = dev.Channels;
                         VolumeEnable = true;
 
@@ -210,7 +222,7 @@ namespace MCM8.UC
 
                         OnSelectedSource.Invoke(this, new ADevEventArgs(dev));
                         ImageChange(dev);
-                        dev.ApiDevice.OnVolumeChanged += DeviceVolumeChanged;
+                        dev.OnVolumeChanged += DeviceVolumeChanged;
                     }
                     catch (Exception ex) { OnError.Invoke(this, new StringEventArgs(ex.Message)); }
                 }
@@ -312,6 +324,11 @@ namespace MCM8.UC
             }
             catch (Exception ex) { OnError.Invoke(this, new StringEventArgs(ex.Message)); }
         }
+
+        private void SelectedName(ADev dev) =>
+            lbName.Invoker(() => {
+                lbName.Text = (dev.Id == -10) ? $"{dev.Name} - ({dev.PlayCount} files)" : dev.Name;
+            });
         #endregion
 
     }
