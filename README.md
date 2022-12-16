@@ -10,4 +10,4 @@ Audio 7.1 Multi Channel Mixer from 8 separate inputs to ASIO output. Support All
 
 ![MCM8 Multi Channel Mixer ASIO Setup](docs/ASIO_8_Multi_Channel_Mixer_Setup_ASIO.png)  
 
-![MCM8 Multi Channel Mixer Connect Scheme.png](ASIO_8_Multi_Channel_Mixer_Connect_Schemet.png)  
+![MCM8 Multi Channel Mixer Connect Scheme.png](docs/ASIO_8_Multi_Channel_Mixer_Connect_Scheme.png)  
